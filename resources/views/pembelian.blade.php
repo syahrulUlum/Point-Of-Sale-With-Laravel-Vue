@@ -65,7 +65,7 @@
                                 <label for="tanggal">Kasir</label>
                             </div>
                             <div class="col-md-8">
-                                Administrator
+                                {{ Auth::user()->name }}
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -73,7 +73,7 @@
                                 <label for="tanggal">NIP</label>
                             </div>
                             <div class="col-md-8">
-                                170908002021
+                                {{ Auth::user()->NIP }}
                             </div>
                         </div>
                     </div>
@@ -208,7 +208,7 @@
                     <td width="20%"></td>
                     <td align="right">Kasir</td>
                     <td align="center">:</td>
-                    <td align="center">Syahrul Ulum</td>
+                    <td align="center">{{ Auth::user()->name }}</td>
                 </tr>
                 <tr>
                     <td colspan="5">
@@ -284,6 +284,5 @@
 @endsection
 @section('js')
     <!-- Vue -->
-    <script src="{{ asset('assets/vendor/Vue/vue.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
 @endsection

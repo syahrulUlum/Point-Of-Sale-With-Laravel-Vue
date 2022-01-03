@@ -19,6 +19,9 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
+
+    <!-- Datatables -->
+    <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     @yield('css')
 
 </head>
@@ -32,43 +35,40 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">ULUM <sup>POS</sup></div>
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
+                <div class="sidebar-brand-text mx-3">ULUM POS</div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="/">
+            <li class="nav-item {{ request()->is('/') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('/') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="/pembelian">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+            <li class="nav-item {{ request()->is('pembelian') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('pembelian') }}">
+                    <i class="fas fa-fw fa-shopping-cart"></i>
                     <span>Pembelian</span></a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="/stok">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Stok Barang</span></a>
+            <li class="nav-item {{ request()->is('barang') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('barang') }}">
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>Barang</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/transaksi">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+            <li class="nav-item {{ request()->is('transaksi') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('transaksi') }}">
+                    <i class="fas fa-fw fa-clipboard"></i>
                     <span>Transaksi</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/user">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>User</span></a>
+            <li class="nav-item {{ request()->is('pengguna') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('pengguna') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Pengguna</span></a>
             </li>
 
 
@@ -158,7 +158,8 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span
+                                    class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}</span>
                                 <img class="img-profile rounded-circle"
                                     src="{{ asset('assets/img/undraw_profile.svg') }}">
                             </a>
@@ -216,8 +217,12 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="{{ route('logout') }}" onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">Logout</a>
                 </div>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
             </div>
         </div>
     </div>
@@ -232,6 +237,12 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
 
+    <!-- VUE -->
+    <script src="{{ asset('assets/vendor/Vue/vue.js') }}"></script>
+
+    <!-- Datatables -->
+    <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     @yield('js')
 
 
