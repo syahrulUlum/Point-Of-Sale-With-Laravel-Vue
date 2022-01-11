@@ -137,7 +137,8 @@
                                     <label for="kategori">Kategori</label>
                                     <select name="kategori_id" id="kategori" class="form-control mb-2">
                                         <template v-for="kategori of kategoris">
-                                            <option :value="kategori.id">@{{ kategori . nama }}</option>
+                                            <option :selected="data.kategori_id === kategori.id" :value="kategori.id">
+                                                @{{ kategori . nama }}</option>
                                         </template>
                                     </select>
 
