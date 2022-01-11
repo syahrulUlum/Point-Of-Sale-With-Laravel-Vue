@@ -4243,6 +4243,44 @@ input[type="submit"].btn-block {
     min-height: 1px;
     padding: 1.25rem;
 }
+
+.card-primary:not(.card-outline) > .card-header {
+    background-color: #007bff;
+}
+
+.card-primary:not(.card-outline) > .card-header,
+.card-primary:not(.card-outline) > .card-header a {
+    color: #fff;
+}
+
+.card-primary:not(.card-outline) > .card-header a.active {
+    color: #1f2d3d;
+}
+
+.card-primary.card-outline {
+    border-top: 3px solid #007bff;
+}
+
+.card-primary.card-outline-tabs > .card-header a:hover {
+    border-top: 3px solid #dee2e6;
+}
+
+.card-primary.card-outline-tabs > .card-header a.active {
+    border-top: 3px solid #007bff;
+}
+
+.bg-primary > .card-header .btn-tool,
+.bg-gradient-primary > .card-header .btn-tool,
+.card-primary:not(.card-outline) > .card-header .btn-tool {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.bg-primary > .card-header .btn-tool:hover,
+.bg-gradient-primary > .card-header .btn-tool:hover,
+.card-primary:not(.card-outline) > .card-header .btn-tool:hover {
+    color: #fff;
+}
+
 .card-title {
     margin-bottom: 0.75rem;
 }

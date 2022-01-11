@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\KategoriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +20,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('kategori', [BarangController::class, 'kategori_api'])->name('kategori.api');
+Route::resource('kategori', KategoriController::class, [
+    'only' => ['index', 'store', 'destroy']
+]);
+
+Route::get('barang', [BarangController::class, 'api'])->name('barang.api');
+Route::resource('barang', BarangController::class, [
+    'except' => ['index', 'show', 'edit', 'create']
+]);

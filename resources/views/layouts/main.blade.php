@@ -237,15 +237,20 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
 
+    <!-- Axios -->
+    <script src="{{ asset('assets/vendor/axios/axios.min.js') }}"></script>
+
     <!-- VUE -->
     <script src="{{ asset('assets/vendor/Vue/vue.js') }}"></script>
 
     <!-- Datatables -->
     <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
+    <!-- Sweet Alert -->
+    <script src="{{ asset('assets/vendor/sweetalert/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/sweetalert/polyfill.js') }}"></script>
     @yield('js')
-
-
 
 
 </body>

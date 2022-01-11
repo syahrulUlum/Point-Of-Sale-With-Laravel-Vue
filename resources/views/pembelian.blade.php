@@ -94,7 +94,7 @@
                                 <label for="bayar">Bayar</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" v-model="bayar" />
+                                <input type="number" class="form-control" v-model="bayar" />
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -102,7 +102,7 @@
                                 <label for="kembalian">Kembalian</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" :value="convert_harga(kembalian())" disabled />
+                                <input type="number" class="form-control" :value="convert_harga(kembalian())" disabled />
                             </div>
                         </div>
 
@@ -192,7 +192,7 @@
 
         <!-- For Print -->
         <div id="print" style="display: none;">
-            <table border="0" cellspacing="10" width="35%">
+            <table border="0" cellspacing="10" width="45%">
                 <tr>
                     <td colspan="5" align="center">
                         <h2 style="font-weight: bold;">UPStore</h2>

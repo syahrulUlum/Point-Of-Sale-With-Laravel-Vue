@@ -13,4 +13,4 @@ Route::resource('pembelian', PembelianController::class, [
     'only' => ['index', 'store']
 ]);
 
-Route::resource('barang', BarangController::class);
+Route::get('barang', [BarangController::class, 'index'])->name('barang.index')->middleware('auth');

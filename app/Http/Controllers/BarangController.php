@@ -19,20 +19,16 @@ class BarangController extends Controller
         return view('barang');
     }
 
-    public function kategori_api()
-    {
-        $data_kategoris = Kategori::select('nama')->orderBy('id', 'desc')->get();
-        return response()->json($data_kategoris);
-    }
-
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Show the API.
      */
-    public function create()
+    public function api()
     {
-        //
+        $barangs = Barang::with('kategori')->orderBy('id', 'desc')->get();
+
+        $datatables = datatables()->of($barangs)->addIndexColumn();
+
+        return $datatables->make(true);
     }
 
     /**
@@ -43,29 +39,15 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'nama' => 'required',
+            'harga' => 'required|min:0',
+            'kategori_id' => 'required',
+            'diskon' => 'required|min:0|max:100',
+            'stok' => 'required|min:0'
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Barang  $barang
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Barang $barang)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Barang  $barang
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Barang $barang)
-    {
-        //
+        Barang::create($request->all());
     }
 
     /**
@@ -77,7 +59,14 @@ class BarangController extends Controller
      */
     public function update(Request $request, Barang $barang)
     {
-        //
+        $request->validate([
+            'nama' => 'required',
+            'harga' => 'required|min:0',
+            'kategori_id' => 'required',
+            'diskon' => 'required|min:0|max:100',
+            'stok' => 'required|min:0'
+        ]);
+        $barang->update($request->all());
     }
 
     /**
@@ -88,6 +77,6 @@ class BarangController extends Controller
      */
     public function destroy(Barang $barang)
     {
-        //
+        $barang->delete();
     }
 }
