@@ -28,13 +28,14 @@
                                 <template v-for="(barang, index) of keranjang" v-if="keranjang">
                                     <tr>
                                         <td>@{{ index + 1 }}</td>
-                                        <td>@{{ barang . nama }}</td>
-                                        <td align="center">@{{ convert_harga(barang . harga) }}</td>
-                                        <td width="15%"><input type="number" class="form-control" v-model="barang.qty" />
+                                        <td>@{{ barang.nama }}</td>
+                                        <td align="center">@{{ convert_harga(barang.harga) }}</td>
+                                        <td width="15%"><input type="number" min="0" :max="barang.stok"
+                                                class="form-control" v-model="barang.qty" />
                                         </td>
-                                        <td align="center">@{{ barang . diskon }}%</td>
+                                        <td align="center">@{{ barang.diskon }}%</td>
                                         <td align="center">
-                                            @{{ convert_harga(total_harga_barang_tabel(index + 1, barang . harga, barang . qty, barang . diskon)) }}
+                                            @{{ convert_harga(total_harga_barang_tabel(index + 1, barang.harga, barang.qty, barang.diskon)) }}
                                         </td>
                                         <td align="center"><button class="btn btn-danger"
                                                 @click="hapus_barang(barang.id)"><i class="fas fa-trash"></i></button>
@@ -102,7 +103,7 @@
                                 <label for="kembalian">Kembalian</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="number" class="form-control" :value="convert_harga(kembalian())" disabled />
+                                <input type="text" class="form-control" :value="convert_harga(kembalian())" disabled />
                             </div>
                         </div>
 
@@ -115,13 +116,12 @@
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-primary" style="width: 100%; height: 55px;"
-                            :disabled="kembalian() < 0 ? true : false" @click="print()">Selesai</button>
+                            :disabled="kembalian() < 0 ? true : false" @click="kirim_ke_database()">Selesai</button>
                     </div>
                 </div>
             </div>
 
         </div>
-
 
         <!-- Logout Modal-->
         <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -157,28 +157,29 @@
                     <form action="" @submit.prevent="tambah_data">
                         <div class="modal-body">
                             <label>Nama Barang</label>
-                            <select name="id" class="form-control" v-model="pilih_barang">
+                            <select name="id" class="form-control mb-2" v-model="pilih_barang">
                                 <template v-for="barang of data_barang">
                                     <option :value="barang.id" v-if="!cek_keranjang(barang.id)">
-                                        @{{ barang . nama }}</option>
+                                        @{{ barang.nama }}</option>
                                 </template>
                             </select>
                             <input type="hidden" name="nama" :value="barang_dipilih().nama" />
                             <label>Harga Barang</label>
-                            <input type="text" class="form-control" :value="convert_harga(barang_dipilih().harga)"
+                            <input type="text" class="form-control mb-2" :value="convert_harga(barang_dipilih().harga)"
                                 disabled name="harga" />
                             <label>Qty</label>
-                            <input type="number" class="form-control" v-model="barang_dipilih().qty" min="0"
+                            <input type="number" class="form-control mb-2" v-model="barang_dipilih().qty" min="0"
                                 :max="barang_dipilih().stok" name="qty" />
                             <label>Stok</label>
-                            <input type="text" class="form-control" disabled :value="barang_dipilih().stok" name="stok" />
+                            <input type="text" class="form-control mb-2" disabled :value="barang_dipilih().stok"
+                                name="stok" />
                             <label>Diskon</label>
-                            <input type="text" class="form-control" disabled :value="barang_dipilih().diskon + '%'"
+                            <input type="text" class="form-control mb-2" disabled :value="barang_dipilih().diskon + '%'"
                                 name="diskon" />
                             <label>Total Harga</label>
-                            <input type="text" class="form-control"
+                            <input type="text" class="form-control mb-2"
                                 :value="total_harga_barang_modal(barang_dipilih().harga, barang_dipilih().qty, barang_dipilih().diskon)"
-                                disabled />
+                                name="total_harga" disabled />
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
@@ -217,12 +218,12 @@
                 </tr>
                 <template v-for="(barang, index) of keranjang">
                     <tr>
-                        <td>@{{ barang . nama }}</td>
-                        <td>@{{ barang . qty }}</td>
-                        <td align="right">@{{ barang . harga }}</td>
+                        <td>@{{ barang.nama }}</td>
+                        <td>@{{ barang.qty }}</td>
+                        <td align="right">@{{ barang.harga }}</td>
                         <td></td>
                         <td align="right">
-                            @{{ convert_harga(barang . qty * barang . harga) }}
+                            @{{ convert_harga(barang.qty * barang.harga) }}
                         </td>
                     </tr>
                     <template v-if="barang.diskon > 0">
@@ -230,9 +231,9 @@
                             <td></td>
                             <td></td>
                             <td align="right">Diskon</td>
-                            <td>@{{ barang . diskon }}%</td>
+                            <td>@{{ barang.diskon }}%</td>
                             <td align="right">
-                                @{{ convert_harga(barang . qty * (barang . harga * barang . diskon / 100)) }}</td>
+                                @{{ convert_harga(barang.qty * (barang.harga * barang.diskon / 100)) }}</td>
                         </tr>
                     </template>
                 </template>
@@ -283,6 +284,161 @@
     </div>
 @endsection
 @section('js')
-    <!-- Vue -->
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script>
+        const vm = new Vue({
+            el: "#app",
+            data: {
+                data_barang: [],
+                keranjang: [],
+                pilih_barang: 0,
+                data_harga: [],
+                bayar: 0,
+                kembali: 0
+            },
+            mounted() {
+                axios.get("{{ route('transaksi.api') }}").then((response) => {
+                    this.data_barang = response.data
+                })
+            },
+            methods: {
+                reset() {
+                    this.keranjang.splice(this.keranjang);
+                    this.data_harga.splice(this.data_harga);
+                },
+                total_harga_barang_tabel(index, harga = 0, qty = 0, diskon = 0) {
+                    let hasil = qty * harga - (qty * harga * diskon) / 100;
+
+                    if (qty <= 0) {
+                        hasil = 0;
+                    }
+                    this.data_harga[index] = parseInt(hasil);
+
+                    return hasil;
+                },
+                total_harga_barang_modal(harga = 0, qty = 0, diskon = 0) {
+                    let hasil = qty * harga - (qty * harga * diskon) / 100;
+
+                    if (qty <= 0) {
+                        hasil = 0;
+                    }
+
+                    return hasil;
+                },
+                hapus_barang(id) {
+                    this.keranjang = this.keranjang.filter((barang) => barang.id != id);
+                    this.data_harga.splice(0);
+                },
+                total_harga() {
+                    return this.data_harga.reduce((a, b) => a + b, 0);
+                },
+                kembalian() {
+                    var kembalian = this.bayar - this.total_harga()
+                    this.kembali = kembalian
+                    return kembalian
+                },
+                convert_harga(x) {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                },
+                barang_dipilih() {
+                    var filter_barang = this.data_barang.find(
+                        (o) => o.id == this.pilih_barang
+                    );
+                    if (filter_barang) {
+                        return filter_barang;
+                    } else {
+                        return {
+                            id: 0,
+                            nama: "",
+                            harga: 0,
+                            stok: 0,
+                            qty: 0,
+                            diskon: 0,
+                        };
+                    }
+                },
+                cek_keranjang(id) {
+                    var filter_keranjang = this.keranjang.find((o) => o.id == id);
+                    if (filter_keranjang) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                tambah_data(data) {
+                    var harga = data.target.elements.harga.value.replace(
+                        /[^\w\s]/gi,
+                        ""
+                    );
+                    var total_harga = data.target.elements.total_harga.value.replace(
+                        /[^\w\s]/gi,
+                        ""
+                    );
+
+                    var input = {
+                        id: parseInt(data.target.elements.id.value),
+                        nama: data.target.elements.nama.value,
+                        harga: parseInt(harga),
+                        stok: parseInt(data.target.elements.stok.value),
+                        qty: parseInt(data.target.elements.qty.value),
+                        diskon: parseInt(data.target.elements.diskon.value),
+                        total_harga: parseInt(data.target.elements.total_harga.value)
+                    };
+                    this.keranjang.unshift(input);
+                    $("#addDataModal").modal("hide");
+                    this.pilih_barang = 0;
+                },
+                print() {
+                    var printContents = document.getElementById("print").innerHTML;
+                    document.body.innerHTML = printContents;
+                    window.print();
+                    location.reload();
+                },
+                kirim_ke_database() {
+                    let keranjang = this.keranjang
+                    let bayar = parseInt(this.bayar)
+                    let kembalian = this.kembali
+                    let total_harga = this.total_harga()
+                    let _token = "{{ Session::token() }}"
+                    let user_id = "{{ Auth::user()->id }}"
+
+                    let data = {
+                        _token,
+                        user_id,
+                        bayar,
+                        kembalian,
+                        total_harga,
+                        keranjang
+                    }
+
+                    Swal.fire({
+                        title: 'Apakah pesanan sudah benar?',
+                        showCancelButton: true,
+                        cancelButtonText: '<b>Check lagi</b>',
+                        confirmButtonText: `<b>Ok</b>`,
+                        confirmButtonColor: '#2255a4',
+                        cancelButtonColor: '#6c757d',
+                        reverseButtons: true,
+                        icon: 'warning'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            axios.post("{{ route('transaksi.store') }}", data).then((response) => {
+                                if (response['data']['Gagal']) {
+                                    Swal.fire({
+                                        title: 'Stok <b>' + response['data']['Gagal'] +
+                                            '</b> tidak cukup',
+                                        confirmButtonText: `Ok`,
+                                        confirmButtonColor: '#007bff',
+                                        icon: 'error'
+                                    })
+                                } else {
+                                    this.print()
+                                }
+                            })
+                        }
+                    })
+
+                }
+            },
+        });
+    </script>
 @endsection

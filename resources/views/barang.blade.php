@@ -7,12 +7,12 @@
                     <li class="nav-item">
                         <a class="nav-link active" id="barang-tab" data-toggle="pill" href="#barang" role="tab"
                             aria-controls="barang" aria-selected="true">Barang <span
-                                class="right badge badge-danger ml-2">@{{ datas . length }}</span></a>
+                                class="right badge badge-danger ml-2">@{{ datas.length }}</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="kategori-tab" data-toggle="pill" href="#kategori" role="tab"
                             aria-controls="kategori" aria-selected="false">Kategori <span
-                                class="right badge badge-danger ml-2">@{{ kategoris . length }}</span></a>
+                                class="right badge badge-danger ml-2">@{{ kategoris.length }}</span></a>
                     </li>
 
 
@@ -58,7 +58,7 @@
                                         <template v-for="(kategori, index) of kategoris">
                                             <tr>
                                                 <td>@{{ index + 1 }}</td>
-                                                <td>@{{ kategori . nama }}</td>
+                                                <td>@{{ kategori.nama }}</td>
                                                 <td width="10%" class="align-middle">
                                                     <button class="btn btn-danger"
                                                         @click="hapus_kategori(kategori.nama)">Hapus</button>
@@ -138,7 +138,7 @@
                                     <select name="kategori_id" id="kategori" class="form-control mb-2">
                                         <template v-for="kategori of kategoris">
                                             <option :selected="data.kategori_id === kategori.id" :value="kategori.id">
-                                                @{{ kategori . nama }}</option>
+                                                @{{ kategori.nama }}</option>
                                         </template>
                                     </select>
 
@@ -268,9 +268,6 @@
                     })
                 },
                 tambah_kategori(event) {
-                    let kategori = {
-                        nama: event.target.kategori.value
-                    }
                     axios.post("{{ route('kategori.store') }}", new FormData($(event.target)[0])).then(
                         response => {
                             // ambil kembali data kategori

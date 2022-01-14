@@ -2,20 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\Transaksi;
+use App\Models\TransaksiDetail;
 use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.
@@ -24,17 +17,19 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        //
+        return view('transaksi');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function api()
     {
-        //
+        $barangs = Barang::select('id', 'nama', 'harga', 'stok', 'diskon')
+            ->where('stok', '>', 0)->get();
+
+        foreach ($barangs as $barang) {
+            $barang->qty = 1;
+        }
+
+        return response()->json($barangs);
     }
 
     /**
@@ -45,51 +40,40 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Transaksi $transaksi)
-    {
-        //
-    }
+        $data = [
+            'user_id' => $request->user_id,
+            'total_harga' => $request->total_harga,
+            'bayar' => $request->bayar,
+            'kembalian' => $request->kembalian
+        ];
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Transaksi $transaksi)
-    {
-        //
-    }
+        $keranjang = $request->keranjang;
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Transaksi $transaksi)
-    {
-        //
-    }
+        // cek apakah pembelian tidak lebih dari stok
+        for ($i = 0; $i < count($keranjang); $i++) {
+            if ($keranjang[$i]['qty'] > $keranjang[$i]['stok']) {
+                return response()->json(['Gagal' => $keranjang[$i]['nama']]);
+                break;
+            }
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Transaksi $transaksi)
-    {
-        //
+        $transaksi = Transaksi::create($data);
+
+        for ($j = 0; $j < count($keranjang); $j++) {
+            $data = [
+                'barang_id' => $keranjang[$j]['id'],
+                'transaksi_id' => $transaksi->id,
+                'qty' => $keranjang[$j]['qty'],
+                'diskon' => $keranjang[$j]['diskon'],
+                'total_harga' => $keranjang[$j]['total_harga']
+            ];
+            TransaksiDetail::create($data);
+
+            // Kurangi stok barang
+            Barang::select('*')
+                ->where('id', $keranjang[$j]['id'])
+                ->decrement('stok', $keranjang[$j]['qty']);
+        }
     }
 }

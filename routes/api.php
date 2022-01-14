@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\TransaksiController;
+use App\Models\Transaksi;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +30,6 @@ Route::get('barang', [BarangController::class, 'api'])->name('barang.api');
 Route::resource('barang', BarangController::class, [
     'except' => ['index', 'show', 'edit', 'create']
 ]);
+
+Route::get('transaksi', [TransaksiController::class, 'api'])->name('transaksi.api');
+Route::post('transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');

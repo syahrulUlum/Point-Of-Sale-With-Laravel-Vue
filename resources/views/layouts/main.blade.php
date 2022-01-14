@@ -1,3 +1,6 @@
+@php
+$pengaturan = \App\Models\Pengaturan::first();
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -9,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dashboard | UPos</title>
+    <title>Dashboard | {{ $pengaturan->nama_aplikasi }}</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -36,7 +39,7 @@
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
-                <div class="sidebar-brand-text mx-3">ULUM POS</div>
+                <div class="sidebar-brand-text mx-3">{{ $pengaturan->nama_toko }}</div>
             </a>
 
             <!-- Divider -->
@@ -49,10 +52,10 @@
                     <span>Dashboard</span></a>
             </li>
 
-            <li class="nav-item {{ request()->is('pembelian') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('pembelian') }}">
+            <li class="nav-item {{ request()->is('transaksi') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('transaksi') }}">
                     <i class="fas fa-fw fa-shopping-cart"></i>
-                    <span>Pembelian</span></a>
+                    <span>Transaksi</span></a>
             </li>
 
             <li class="nav-item {{ request()->is('barang') ? 'active' : '' }}">
@@ -60,15 +63,20 @@
                     <i class="fas fa-fw fa-box"></i>
                     <span>Barang</span></a>
             </li>
-            <li class="nav-item {{ request()->is('transaksi') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('transaksi') }}">
+            <li class="nav-item {{ request()->is('detail_transaksi') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('detail_transaksi') }}">
                     <i class="fas fa-fw fa-clipboard"></i>
-                    <span>Transaksi</span></a>
+                    <span>Detail Transaksi</span></a>
             </li>
             <li class="nav-item {{ request()->is('pengguna') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('pengguna') }}">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Pengguna</span></a>
+            </li>
+            <li class="nav-item {{ request()->is('pengaturan') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('pengaturan') }}">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Pengaturan</span></a>
             </li>
 
 

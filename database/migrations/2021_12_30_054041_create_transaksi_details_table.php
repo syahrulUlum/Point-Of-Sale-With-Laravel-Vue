@@ -18,6 +18,7 @@ class CreateTransaksiDetailsTable extends Migration
             $table->unsignedBigInteger('barang_id');
             $table->unsignedBigInteger('transaksi_id');
             $table->integer('qty');
+            $table->unsignedInteger('diskon');
             $table->integer('total_harga');
             $table->timestamps();
 
