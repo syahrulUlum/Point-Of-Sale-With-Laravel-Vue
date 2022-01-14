@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Barang;
 use App\Models\Transaksi;
-use App\Models\TransaksiDetail;
+use App\Models\Pengaturan;
 use Illuminate\Http\Request;
+use App\Models\TransaksiDetail;
 
 class TransaksiController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +18,11 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        return view('transaksi');
+        $pengaturan = Pengaturan::first();
+        $transaksi_hari_ini = Transaksi::whereDate('created_at', Carbon::today())->get();
+        $invoice = invoice(count($transaksi_hari_ini), $pengaturan->nama_aplikasi);
+
+        return view('transaksi', compact('invoice'));
     }
 
     public function api()
@@ -43,6 +48,7 @@ class TransaksiController extends Controller
 
         $data = [
             'user_id' => $request->user_id,
+            'invoice' => $request->invoice,
             'total_harga' => $request->total_harga,
             'bayar' => $request->bayar,
             'kembalian' => $request->kembalian

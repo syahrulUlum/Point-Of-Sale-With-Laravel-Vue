@@ -9,8 +9,10 @@ class Transaksi extends Model
 {
     use HasFactory;
 
+
     protected $fillable = [
         'user_id',
+        'invoice',
         'total_harga',
         'bayar',
         'kembalian'

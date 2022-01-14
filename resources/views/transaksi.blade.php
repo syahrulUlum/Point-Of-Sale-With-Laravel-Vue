@@ -82,7 +82,7 @@
                 <!-- Invoice -->
                 <div class="card shadow border-top-primary mt-2">
                     <div class="card-body text-right">
-                        <h5>Invoice <b class="text-dark">UP2021122600001</b></h5>
+                        <h5>Invoice <b class="text-dark">{{ $invoice }}</b></h5>
                         <p style="font-size: 60px; margin-bottom: 8px; font-weight: bold;" class="text-dark">
                             @{{ convert_harga(total_harga()) }}</p>
                     </div>
@@ -202,7 +202,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="5" align="center">UP2021122600001</td>
+                    <td colspan="5" align="center">{{ $invoice }}</td>
                 </tr>
                 <tr>
                     <td width="50%">{{ date('d/m/Y H:i') }}</td>
@@ -400,10 +400,12 @@
                     let total_harga = this.total_harga()
                     let _token = "{{ Session::token() }}"
                     let user_id = "{{ Auth::user()->id }}"
+                    let invoice = "{{ $invoice }}"
 
                     let data = {
                         _token,
                         user_id,
+                        invoice,
                         bayar,
                         kembalian,
                         total_harga,
