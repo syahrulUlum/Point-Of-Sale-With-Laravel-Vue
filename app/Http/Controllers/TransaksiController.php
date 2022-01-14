@@ -22,7 +22,7 @@ class TransaksiController extends Controller
         $transaksi_hari_ini = Transaksi::whereDate('created_at', Carbon::today())->get();
         $invoice = invoice(count($transaksi_hari_ini), $pengaturan->nama_aplikasi);
 
-        return view('transaksi', compact('invoice'));
+        return view('transaksi', compact('invoice', 'pengaturan'));
     }
 
     public function api()
@@ -45,6 +45,14 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'user_id' => 'required',
+            'invoice' => 'required',
+            'total_harga' => 'required',
+            'bayar' => 'required',
+            'kembalian' => 'required',
+            'keranjang' => 'required',
+        ]);
 
         $data = [
             'user_id' => $request->user_id,

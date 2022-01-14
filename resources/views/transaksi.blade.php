@@ -129,16 +129,15 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Yakin mau keluar ?</h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current
-                        session.</div>
+                    <div class="modal-body">Klik "Keluar" jika anda ingin keluar</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="login.html">Logout</a>
+                        <a class="btn btn-primary" href="login.html">Keluar</a>
                     </div>
                 </div>
             </div>
@@ -196,8 +195,8 @@
             <table border="0" cellspacing="10" width="45%">
                 <tr>
                     <td colspan="5" align="center">
-                        <h2 style="font-weight: bold;">UPStore</h2>
-                        <p>Jl. Parungpung - pamarayan</p>
+                        <h2 style="font-weight: bold;">{{ $pengaturan->nama_toko }}</h2>
+                        <p>{{ $pengaturan->alamat }}</p>
                         <hr style="margin-top: 7px;" />
                     </td>
                 </tr>
