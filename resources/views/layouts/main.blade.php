@@ -193,7 +193,7 @@ $pengaturan = \App\Models\Pengaturan::first();
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website
+                        <span>Copyright &copy; {{ $pengaturan->nama_aplikasi }}
                             {{ date('Y') }}</span>
                     </div>
                 </div>
