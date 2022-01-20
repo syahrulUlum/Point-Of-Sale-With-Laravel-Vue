@@ -220,10 +220,10 @@
                 render: function(index, row, data, meta) {
                     return `
                         <a href="#" class="btn btn-info" onclick="data.edit_data(event, ${meta.row})">
-                            Edit
+                            Ubah
                         </a>
                         <button class="btn btn-danger" onclick="data.hapus_barang(event, ${data.id})">
-                            Delete
+                            Hapus
                         </button>
                 `
                 },
@@ -299,7 +299,8 @@
                         confirmButtonText: `Hapus`,
                         confirmButtonColor: 'red',
                         cancelButtonColor: '#2255a4',
-                        icon: 'warning'
+                        icon: 'warning',
+                        reverseButtons: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
                             axios.delete('api/kategori/' + nama).then((
@@ -339,7 +340,7 @@
                 edit_data(event, row) {
                     this.data = this.datas[row];
                     this.edit_status = true;
-                    this.actionName = 'Update Barang';
+                    this.actionName = 'Ubah Barang';
                     this.status = 'diubah'
                     $('#barang_modal').modal('show');
                 },
@@ -350,26 +351,29 @@
                         confirmButtonText: `Hapus`,
                         confirmButtonColor: 'red',
                         cancelButtonColor: '#2255a4',
-                        icon: 'warning'
-                    }).then((response) => {
-                        axios.post(this.actionUrl + '/' + id, {
-                            _method: 'DELETE'
-                        }).then(response => {
-                            this.table.ajax.reload()
-                            Swal.fire({
-                                title: 'Barang berhasil dihapus',
-                                confirmButtonText: 'Ok',
-                                confirmButtonColor: '#007bff',
-                                icon: 'success'
+                        icon: 'warning',
+                        reverseButtons: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            axios.post(this.actionUrl + '/' + id, {
+                                _method: 'DELETE'
+                            }).then(response => {
+                                this.table.ajax.reload()
+                                Swal.fire({
+                                    title: 'Barang berhasil dihapus',
+                                    confirmButtonText: 'Ok',
+                                    confirmButtonColor: '#007bff',
+                                    icon: 'success'
+                                })
+                            }).catch((error) => {
+                                Swal.fire({
+                                    title: 'Barang gagal dihapus',
+                                    confirmButtonText: 'Ok',
+                                    confirmButtonColor: '#007bff',
+                                    icon: 'error'
+                                })
                             })
-                        }).catch((error) => {
-                            Swal.fire({
-                                title: 'Barang gagal dihapus',
-                                confirmButtonText: 'Ok',
-                                confirmButtonColor: '#007bff',
-                                icon: 'error'
-                            })
-                        })
+                        }
                     })
                 },
                 submit_form(event, id) {

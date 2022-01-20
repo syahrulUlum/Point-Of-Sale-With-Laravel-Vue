@@ -17,4 +17,14 @@ class Transaksi extends Model
         'bayar',
         'kembalian'
     ];
+
+    public function detail_transaksi()
+    {
+        return $this->hasMany('App\Models\TransaksiDetail', 'transaksi_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
 }

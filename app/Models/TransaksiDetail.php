@@ -16,4 +16,14 @@ class TransaksiDetail extends Model
         'diskon',
         'total_harga'
     ];
+
+    public function transaksis()
+    {
+        return $this->belongsTo('App\Models\Transaksi', 'transaksi_id');
+    }
+
+    public function barang()
+    {
+        return $this->belongsTo('App\Models\Barang', 'barang_id');
+    }
 }

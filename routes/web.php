@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\TransaksiDetailController;
 
 Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
@@ -16,4 +17,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
     Route::put('pengaturan/{pengaturan}', [PengaturanController::class, 'update'])->name('pengaturan.update');
+
+    Route::get('detail_transaksi', [TransaksiDetailController::class, 'index'])->name('detail_transaksi.index');
 });

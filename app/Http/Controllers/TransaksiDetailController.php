@@ -2,21 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use Illuminate\Http\Request;
 
 class TransaksiDetailController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -24,62 +15,21 @@ class TransaksiDetailController extends Controller
      */
     public function index()
     {
-        //
+        return view('detail_transaksi');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function api()
     {
-        //
-    }
+        $transaksis = Transaksi::with('detail_transaksi', 'users', 'detail_transaksi.barang')->orderBy('id', 'desc')->get();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        foreach ($transaksis as $transaksi) {
+            $transaksi->jumlah_barang = count($transaksi->detail_transaksi);
+            $transaksi->waktu = date('d/m/Y  H:i', strtotime($transaksi->created_at));
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\TransaksiDetail  $transaksiDetail
-     * @return \Illuminate\Http\Response
-     */
-    public function show(TransaksiDetail $transaksiDetail)
-    {
-        //
-    }
+        $datatables = datatables()->of($transaksis)->addIndexColumn();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\TransaksiDetail  $transaksiDetail
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(TransaksiDetail $transaksiDetail)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TransaksiDetail  $transaksiDetail
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, TransaksiDetail $transaksiDetail)
-    {
-        //
+        return $datatables->make(true);
     }
 
     /**
@@ -88,8 +38,9 @@ class TransaksiDetailController extends Controller
      * @param  \App\Models\TransaksiDetail  $transaksiDetail
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TransaksiDetail $transaksiDetail)
+    public function destroy($id)
     {
-        //
+        $hapus = Transaksi::where('id', $id)->first();
+        $hapus->delete();
     }
 }
