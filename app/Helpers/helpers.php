@@ -11,3 +11,8 @@ function invoice($transaksi, $nama_aplikasi)
 
     return $huruf . date('Ymd') . $jumlah_transaksi;
 }
+
+function convert_rupiah($data)
+{
+    return "Rp. " . number_format($data, 0, '', '.');
+}
