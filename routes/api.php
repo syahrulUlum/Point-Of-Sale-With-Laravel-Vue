@@ -7,6 +7,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TransaksiDetailController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,3 +38,8 @@ Route::post('transaksi', [TransaksiController::class, 'store'])->name('transaksi
 
 Route::get('detail_transaksi', [TransaksiDetailController::class, 'api'])->name('detail_transaksi.api');
 Route::delete('detail_transaksi/{detail_transaksi}', [TransaksiDetailController::class, 'destroy'])->name('detail_transaksi.destroy');
+
+Route::resource('pengguna', UserController::class, [
+    'only' => ['store', 'update', 'destroy']
+]);
+Route::get('pengguna', [UserController::class, 'api'])->name('pengguna.api');

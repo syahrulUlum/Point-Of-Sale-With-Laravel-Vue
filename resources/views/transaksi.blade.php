@@ -74,7 +74,7 @@
                                 <label for="tanggal">NIP</label>
                             </div>
                             <div class="col-md-8">
-                                {{ Auth::user()->NIP }}
+                                {{ Auth::user()->nip }}
                             </div>
                         </div>
                     </div>

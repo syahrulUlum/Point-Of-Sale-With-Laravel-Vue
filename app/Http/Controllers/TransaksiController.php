@@ -8,6 +8,9 @@ use App\Models\Transaksi;
 use App\Models\Pengaturan;
 use Illuminate\Http\Request;
 use App\Models\TransaksiDetail;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class TransaksiController extends Controller
 {
