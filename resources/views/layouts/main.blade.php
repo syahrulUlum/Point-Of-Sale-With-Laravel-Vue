@@ -1,5 +1,8 @@
 @php
 $pengaturan = \App\Models\Pengaturan::first();
+$notif_barang = \App\Models\Barang::where('stok', '<=', $pengaturan->pengingat_stok)
+    ->orderBy('updated_at', 'DESC')
+    ->get();
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -12,7 +15,7 @@ $pengaturan = \App\Models\Pengaturan::first();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dashboard | {{ $pengaturan->nama_aplikasi }}</title>
+    <title>{{ $pengaturan->nama_aplikasi }}</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -33,62 +36,63 @@ $pengaturan = \App\Models\Pengaturan::first();
 
     <!-- Page Wrapper -->
     <div id="wrapper">
-        @hasrole('admin')
-            <!-- Sidebar -->
-            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-                <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
-                    <div class="sidebar-brand-text mx-3">{{ $pengaturan->nama_toko }}</div>
-                </a>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider my-0">
-
-                <!-- Nav Item - Dashboard -->
-                <li class="nav-item {{ request()->is('/') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('/') }}">
-                        <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Dashboard</span></a>
-                </li>
-
-                <li class="nav-item {{ request()->is('transaksi') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('transaksi') }}">
-                        <i class="fas fa-fw fa-shopping-cart"></i>
-                        <span>Transaksi</span></a>
-                </li>
-
-                <li class="nav-item {{ request()->is('barang') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('barang') }}">
-                        <i class="fas fa-fw fa-box"></i>
-                        <span>Barang</span></a>
-                </li>
-                <li class="nav-item {{ request()->is('detail_transaksi') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('detail_transaksi') }}">
-                        <i class="fas fa-fw fa-clipboard"></i>
-                        <span>Detail Transaksi</span></a>
-                </li>
-                <li class="nav-item {{ request()->is('pengguna') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('pengguna') }}">
-                        <i class="fas fa-fw fa-user"></i>
-                        <span>Pengguna</span></a>
-                </li>
-                <li class="nav-item {{ request()->is('pengaturan') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('pengaturan') }}">
-                        <i class="fas fa-fw fa-cog"></i>
-                        <span>Pengaturan</span></a>
-                </li>
-
-
-                <!-- Sidebar Toggler (Sidebar) -->
-                <div class="text-center d-none d-md-inline">
-                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-shopping-cart"></i>
                 </div>
+                <div class="sidebar-brand-text mx-3">{{ $pengaturan->nama_toko }}</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item {{ request()->is('/') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('/') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <li class="nav-item {{ request()->is('transaksi') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('transaksi') }}">
+                    <i class="fas fa-fw fa-shopping-cart"></i>
+                    <span>Transaksi</span></a>
+            </li>
+
+            <li class="nav-item {{ request()->is('barang') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('barang') }}">
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>Barang</span></a>
+            </li>
+            <li class="nav-item {{ request()->is('detail_transaksi') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('detail_transaksi') }}">
+                    <i class="fas fa-fw fa-clipboard"></i>
+                    <span>Detail Transaksi</span></a>
+            </li>
+            <li class="nav-item {{ request()->is('pengguna') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('pengguna') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Pengguna</span></a>
+            </li>
+            <li class="nav-item {{ request()->is('pengaturan') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('pengaturan') }}">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Pengaturan</span></a>
+            </li>
 
 
-            </ul>
-            <!-- End of Sidebar -->
-        @endhasrole
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+
+        </ul>
+        <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -114,52 +118,53 @@ $pengaturan = \App\Models\Pengaturan::first();
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
+                                @if (count($notif_barang) > 0)
+                                    @if (count($notif_barang) > 5)
+                                        <span class="badge badge-danger badge-counter">5+</span>
+                                    @else
+                                        <span
+                                            class="badge badge-danger badge-counter">{{ count($notif_barang) }}</span>
+                                    @endif
+                                @endif
+
                             </a>
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="alertsDropdown">
                                 <h6 class="dropdown-header">
-                                    Alerts Center
+                                    Notifikasi
                                 </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-donate text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                                @if (count($notif_barang) > 0)
+                                    @foreach ($notif_barang as $key => $info_barang)
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <div>
+                                                <div class="small text-gray-500">
+                                                    {{ convert_date($info_barang->updated_at) }}
+                                                </div>
+                                                <span class="font-weight-bold">{{ $info_barang->nama }} tersisa
+                                                    <span class="text-danger">{{ $info_barang->stok }}</span>
+                                                </span>
+                                            </div>
+                                        </a>
+
+                                        @php
+                                            if ($key + 1 == 5) {
+                                                break;
+                                            }
+                                        @endphp
+                                    @endforeach
+                                @else
+                                    <span class="dropdown-item d-flex align-items-center ">
+                                        <span class="text-secondary">Tidak ada Notifikasi
+                                        </span>
+                                    </span>
+                                @endif
+
+                                <a class="dropdown-item text-center small text-gray-500"
+                                    href="{{ route('notifikasi') }}">Lihat Semua
+                                    Notifikasi</a>
                             </div>
                         </li>
-
-
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 

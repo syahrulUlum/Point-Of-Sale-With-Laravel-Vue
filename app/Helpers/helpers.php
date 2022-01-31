@@ -16,3 +16,8 @@ function convert_rupiah($data)
 {
     return "Rp. " . number_format($data, 0, '', '.');
 }
+
+function convert_date($value)
+{
+    return date('d M Y', strtotime($value));
+}

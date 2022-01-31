@@ -25,4 +25,6 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('detail_transaksi', [TransaksiDetailController::class, 'index'])->name('detail_transaksi.index');
 
     Route::get('pengguna', [UserController::class, 'index'])->name('pengguna.index');
+
+    Route::get('notifikasi', [HomeController::class, 'notifikasi'])->name('notifikasi');
 });

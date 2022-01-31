@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Pengaturan;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use Carbon\Carbon;
@@ -80,5 +81,12 @@ class HomeController extends Controller
         }
 
         return view('dashboard', compact('hari_ini', 'bulan_ini', 'barang_terjual', 'barang_habis', 'data_statistik', 'label_barang_dijual', 'banyak_barang_dijual', 'label_barang_diminati', 'banyak_barang_diminati'));
+    }
+
+    public function notifikasi()
+    {
+        $batas_notif = Pengaturan::first();
+        $data_notif = Barang::where('stok', '<=', $batas_notif->pengingat_stok)->get();
+        return view('notifikasi', compact('data_notif'));
     }
 }

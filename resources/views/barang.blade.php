@@ -131,7 +131,7 @@
                                         v-model="data.nama" required>
 
                                     <label for="harga_barang">Harga</label>
-                                    <input type="number" min="0" class="form-control mb-2" id="harga_barang" name="harga"
+                                    <input type="number" min="1" class="form-control mb-2" id="harga_barang" name="harga"
                                         v-model="data.harga" required>
 
                                     <label for="kategori">Kategori</label>
