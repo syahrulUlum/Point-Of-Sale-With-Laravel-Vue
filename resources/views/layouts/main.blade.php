@@ -37,58 +37,73 @@ $notif_barang = \App\Models\Barang::where('stok', '<=', $pengaturan->pengingat_s
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion @hasrole('kasir') toggled @endhasrole"
+            id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
+            <span class="sidebar-brand d-flex align-items-center justify-content-center">
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
                 <div class="sidebar-brand-text mx-3">{{ $pengaturan->nama_toko }}</div>
-            </a>
+            </span>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
+            @hasrole('admin')
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item {{ request()->is('/') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('/') }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Dashboard</span></a>
+                </li>
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item {{ request()->is('/') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('/') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                <li class="nav-item {{ request()->is('transaksi') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('transaksi') }}">
+                        <i class="fas fa-fw fa-shopping-cart"></i>
+                        <span>Transaksi</span></a>
+                </li>
+
+                <li class="nav-item {{ request()->is('barang') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('barang') }}">
+                        <i class="fas fa-fw fa-box"></i>
+                        <span>Barang</span></a>
+                </li>
+                <li class="nav-item {{ request()->is('detail_transaksi') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('detail_transaksi') }}">
+                        <i class="fas fa-fw fa-clipboard"></i>
+                        <span>Detail Transaksi</span></a>
+                </li>
+                <li class="nav-item {{ request()->is('pengguna') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('pengguna') }}">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Pengguna</span></a>
+                </li>
+                <li class="nav-item {{ request()->is('pengaturan') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('pengaturan') }}">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>Pengaturan</span></a>
+                </li>
+            @endhasrole
+            @hasrole('staff_gudang')
+                <li class="nav-item {{ request()->is('barang') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('barang') }}">
+                        <i class="fas fa-fw fa-box"></i>
+                        <span>Barang</span></a>
+                </li>
+            @endhasrole
+            <li class="nav-item ">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#modalKeluar">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Keluar</span></a>
             </li>
 
-            <li class="nav-item {{ request()->is('transaksi') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('transaksi') }}">
-                    <i class="fas fa-fw fa-shopping-cart"></i>
-                    <span>Transaksi</span></a>
-            </li>
-
-            <li class="nav-item {{ request()->is('barang') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('barang') }}">
-                    <i class="fas fa-fw fa-box"></i>
-                    <span>Barang</span></a>
-            </li>
-            <li class="nav-item {{ request()->is('detail_transaksi') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('detail_transaksi') }}">
-                    <i class="fas fa-fw fa-clipboard"></i>
-                    <span>Detail Transaksi</span></a>
-            </li>
-            <li class="nav-item {{ request()->is('pengguna') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('pengguna') }}">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Pengguna</span></a>
-            </li>
-            <li class="nav-item {{ request()->is('pengaturan') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('pengaturan') }}">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Pengaturan</span></a>
-            </li>
-
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            @hasrole('admin|staff_gudang')
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
+            @endhasrole
 
 
         </ul>
@@ -107,86 +122,86 @@ $notif_barang = \App\Models\Barang::where('stok', '<=', $pengaturan->pengingat_s
                         <i class="fa fa-bars"></i>
                     </button>
 
-
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
-                        <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                @if (count($notif_barang) > 0)
-                                    @if (count($notif_barang) > 5)
-                                        <span class="badge badge-danger badge-counter">5+</span>
-                                    @else
-                                        <span
-                                            class="badge badge-danger badge-counter">{{ count($notif_barang) }}</span>
+                        @hasrole('admin')
+                            <!-- Nav Item - Alerts -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-bell fa-fw"></i>
+                                    <!-- Counter - Alerts -->
+                                    @if (count($notif_barang) > 0)
+                                        @if (count($notif_barang) > 5)
+                                            <span class="badge badge-danger badge-counter">5+</span>
+                                        @else
+                                            <span
+                                                class="badge badge-danger badge-counter">{{ count($notif_barang) }}</span>
+                                        @endif
                                     @endif
-                                @endif
 
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Notifikasi
-                                </h6>
-                                @if (count($notif_barang) > 0)
-                                    @foreach ($notif_barang as $key => $info_barang)
-                                        <a class="dropdown-item d-flex align-items-center" href="#">
-                                            <div>
-                                                <div class="small text-gray-500">
-                                                    {{ convert_date($info_barang->updated_at) }}
-                                                </div>
-                                                <span class="font-weight-bold">{{ $info_barang->nama }} tersisa
-                                                    <span class="text-danger">{{ $info_barang->stok }}</span>
-                                                </span>
-                                            </div>
-                                        </a>
-
-                                        @php
-                                            if ($key + 1 == 5) {
-                                                break;
-                                            }
-                                        @endphp
-                                    @endforeach
-                                @else
-                                    <span class="dropdown-item d-flex align-items-center ">
-                                        <span class="text-secondary">Tidak ada Notifikasi
-                                        </span>
-                                    </span>
-                                @endif
-
-                                <a class="dropdown-item text-center small text-gray-500"
-                                    href="{{ route('notifikasi') }}">Lihat Semua
-                                    Notifikasi</a>
-                            </div>
-                        </li>
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span
-                                    class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}</span>
-                                <img class="img-profile rounded-circle"
-                                    src="{{ asset('assets/img/undraw_profile.svg') }}">
-                            </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalKeluar">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
                                 </a>
-                            </div>
-                        </li>
+                                <!-- Dropdown - Alerts -->
+                                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                    aria-labelledby="alertsDropdown">
+                                    <h6 class="dropdown-header">
+                                        Notifikasi
+                                    </h6>
+                                    @if (count($notif_barang) > 0)
+                                        @foreach ($notif_barang as $key => $info_barang)
+                                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                                <div>
+                                                    <div class="small text-gray-500">
+                                                        {{ convert_date($info_barang->updated_at) }}
+                                                    </div>
+                                                    <span class="font-weight-bold">{{ $info_barang->nama }} tersisa
+                                                        <span class="text-danger">{{ $info_barang->stok }}</span>
+                                                    </span>
+                                                </div>
+                                            </a>
+
+                                            @php
+                                                if ($key + 1 == 5) {
+                                                    break;
+                                                }
+                                            @endphp
+                                        @endforeach
+                                    @else
+                                        <span class="dropdown-item d-flex align-items-center ">
+                                            <span class="text-secondary">Tidak ada Notifikasi
+                                            </span>
+                                        </span>
+                                    @endif
+
+                                    <a class="dropdown-item text-center small text-gray-500"
+                                        href="{{ route('notifikasi') }}">Lihat Semua
+                                        Notifikasi</a>
+                                </div>
+                            </li>
+
+                            <div class="topbar-divider d-none d-sm-block"></div>
+                        @endhasrole
+                        @hasrole('admin|staff_gudang')
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span
+                                        class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}</span>
+                                    <img class="img-profile rounded-circle"
+                                        src="{{ asset('assets/img/undraw_profile.svg') }}">
+                                </a>
+                                <!-- Dropdown - User Information -->
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                    aria-labelledby="userDropdown">
+
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalKeluar">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Keluar
+                                    </a>
+                                </div>
+                            </li>
+                        @endhasrole
 
                     </ul>
 
@@ -232,7 +247,7 @@ $notif_barang = \App\Models\Barang::where('stok', '<=', $pengaturan->pengingat_s
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary" href="{{ route('logout') }}" onclick="event.preventDefault();
-                    document.getElementById('logout-form').submit();">Keluar</a>
+                        document.getElementById('logout-form').submit();">Keluar</a>
                 </div>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
