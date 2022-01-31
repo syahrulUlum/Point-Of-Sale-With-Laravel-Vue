@@ -4,7 +4,20 @@
     <div class="container" id="pengguna">
         <div class="card shadow">
             <div class="card-body">
-                <button class="btn btn-primary mb-4" @click="tambah_pengguna()">Tambah Pengguna</button>
+                <div class="row">
+                    <div class="col-md">
+                        <button class="btn btn-primary mb-4" @click="tambah_pengguna()">Tambah Pengguna</button>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="filter_posisi" id="filter_posisi" class="form-control">
+                            <option value="semua">Semua</option>
+                            <option value="admin">Admin</option>
+                            <option value="kasir">Kasir</option>
+                            <option value="staff_gudang">Staff Gudang</option>
+                        </select>
+                    </div>
+                </div>
+
                 <table class="table table-bordered table-hover text-center" id="pengguna_table">
                     <thead>
                         <th width="6%">No</th>
@@ -82,7 +95,7 @@
                 orderable: true
             },
             {
-                data: 'role',
+                data: 'posisi',
                 class: 'text-center align-middle',
                 orderable: true
             },
@@ -102,6 +115,7 @@
                 class: 'text-center align-middle'
             }
         ]
+        const apiUrl = "{{ url('api/pengguna') }}"
         const pengguna = new Vue({
             el: '#pengguna',
             data: {
@@ -119,7 +133,7 @@
                     const _this = this
                     _this.table = $('#pengguna_table').DataTable({
                         ajax: {
-                            url: "{{ route('pengguna.api') }}",
+                            url: apiUrl,
                             type: 'GET'
                         },
                         columns
@@ -170,7 +184,7 @@
                 edit_data(event, row) {
                     this.data = this.datas[row];
                     this.edit_status = true;
-                    this.keterangan = 'Ubah Barang';
+                    this.keterangan = 'Ubah Pengguna    ';
                     $('#pengguna_modal').modal('show');
                 },
                 submit_form(event, id) {
@@ -201,6 +215,17 @@
                         }
                     })
                 },
+            }
+        })
+    </script>
+    <script>
+        $('select[name=filter_posisi]').on('change', function() {
+            filter_posisi = $('select[name=filter_posisi]').val()
+            if (filter_posisi == 'semua') {
+                pengguna.table.ajax.url(apiUrl).load()
+            } else {
+                console.log(filter_posisi);
+                pengguna.table.ajax.url(apiUrl + '?filter_posisi=' + filter_posisi).load()
             }
         })
     </script>

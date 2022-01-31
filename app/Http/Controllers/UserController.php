@@ -20,12 +20,30 @@ class UserController extends Controller
         return view('pengguna', compact('roles'));
     }
 
-    public function api()
+    public function api(Request $request)
     {
-        $pengguna = User::select('users.id', 'users.nip', 'users.name', 'users.email', 'roles.name as role')
-            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
-            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-            ->get();
+        if (isset($request->filter_posisi)) {
+            $pengguna = User::select('users.id', 'users.nip', 'users.name', 'users.email', 'roles.name as role')
+                ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('roles.name', $request->filter_posisi)
+                ->get();
+        } else {
+            $pengguna = User::select('users.id', 'users.nip', 'users.name', 'users.email', 'roles.name as role')
+                ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->get();
+        }
+
+        foreach ($pengguna as $data_pengguna) {
+            if ($data_pengguna->role == 'admin') {
+                $data_pengguna->posisi = 'Admin';
+            } else if ($data_pengguna->role == 'kasir') {
+                $data_pengguna->posisi = 'Kasir';
+            } else {
+                $data_pengguna->posisi = 'Staff Gudang';
+            }
+        }
 
         $datatables = datatables()->of($pengguna)->addIndexColumn();
 
