@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory()->create();
+        $admin = \App\Models\User::factory()->create();
         \App\Models\Pengaturan::factory()->create();
 
         $role = Role::create(['name' => 'admin']);
@@ -35,5 +35,7 @@ class DatabaseSeeder extends Seeder
 
         $role3->givePermissionTo($permission3);
         $permission3->assignRole($role3);
+        
+        $admin->assignRole($role);
     }
 }
